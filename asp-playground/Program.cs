@@ -1,22 +1,29 @@
+using asp_playground.Data;
+using asp_playground.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
+builder.Services.AddDbContext<AppDbContext>(o =>
+    o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+builder.Services.AddScoped<IDonationService, DonationService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Apply pending migrations on startup so a fresh clone runs with no manual DB step.
+using (var scope = app.Services.CreateScope())
 {
-    app.MapOpenApi();
+    scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
 }
 
-app.UseHttpsRedirection();
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
-app.UseAuthorization();
+app.MapOpenApi();
+app.UseSwaggerUI(o => o.SwaggerEndpoint("/openapi/v1.json", "Donation API v1"));
 
 app.MapControllers();
 
