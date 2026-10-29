@@ -29,7 +29,7 @@ Program.cs     Composition root
 
 Flow: `Controller -> Service -> DbContext`. Entities never leave the service; controllers only see DTOs.
 
-## Setup and run
+## Setup and run (without Docker)
 
 Requirements: .NET 10 SDK and SQL Server LocalDB (installed with Visual Studio's *Data storage and processing* workload) or any SQL Server instance.
 
@@ -40,6 +40,39 @@ dotnet run --launch-profile http
 - API: http://localhost:5234
 - Swagger UI: http://localhost:5234/swagger
 - OpenAPI JSON: http://localhost:5234/openapi/v1.json
+
+## Run with Docker Compose
+
+Runs the API and a SQL Server 2022 container together. The only requirement is Docker (with Compose v2); no .NET SDK or local SQL Server is needed.
+
+1. **Configure credentials.** Copy `.env.example` to `.env` and set `DB_PASSWORD` (8+ characters with upper, lower, digit and symbol). `.env` is git-ignored; no credentials live in the source.
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Build and start** both containers (the API waits until SQL Server is healthy, then applies migrations on startup):
+
+   ```bash
+   docker compose up -d --build
+   ```
+
+3. **Use it:** Swagger UI at http://localhost:8080/swagger, health at http://localhost:8080/api/health. Check status or logs with `docker compose ps` / `docker compose logs -f api`.
+
+4. **Stop:**
+
+   ```bash
+   docker compose down        # stop and remove containers, keep the data
+   docker compose down -v     # also delete the database volume
+   ```
+
+| Variable (`.env`) | Purpose | Default |
+|---|---|---|
+| `DB_PASSWORD` | SQL Server `sa` password (required) | none |
+| `DB_NAME` | Database name | `DonationDb` |
+| `API_PORT` | Host port for the API | `8080` |
+
+`compose.yaml` passes the connection string to the API as `ConnectionStrings__Default`, which overrides `appsettings.json`. The API reaches the database over the Compose network at host `db`. Data persists in the `sqldata` volume. The Postman collection works against Docker with `baseUrl` set to `http://localhost:8080`.
 
 ### Database
 
