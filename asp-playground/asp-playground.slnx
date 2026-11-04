@@ -1,3 +1,4 @@
 <Solution>
-  <Project Path="asp-playground.csproj" />
+  <Project Path="../Tests/AspPlayground.Tests.csproj" Id="1510d350-44cd-493f-a426-ecfaa6a0165d" />
+  <Project Path="AspPlayground.csproj" />
 </Solution>

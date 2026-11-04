@@ -1,4 +1,4 @@
-namespace asp_playground.DTOs;
+namespace AspPlayground.DTOs;
 
 /// <summary>One page of results plus the paging metadata.</summary>
 public class PagedResponse<T>

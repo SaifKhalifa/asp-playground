@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace asp_playground.DTOs;
+namespace AspPlayground.DTOs;
 
 /// <summary>Query-string parameters for paged list endpoints.</summary>
 public class PaginationQuery
