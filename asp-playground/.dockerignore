@@ -1,0 +1,15 @@
+**/bin/
+**/obj/
+.git/
+.gitignore
+.vs/
+.vscode/
+.env
+.env.*
+!.env.example
+Dockerfile
+compose.yaml
+.dockerignore
+README.md
+postman/
+*.pdf
